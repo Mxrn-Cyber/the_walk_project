@@ -10,7 +10,7 @@ import { useData } from "../../contexts/DataProvider";
 import { useAuth } from "../../contexts/AuthProvider";
 import { CgShoppingCart } from "react-icons/cg";
 import { useUserData } from "../../contexts/UserDataProvider";
-import { SiTaichilang } from "react-icons/si";
+import { TbArrowBigLeftLineFilled } from "react-icons/tb";
 
 export const Header = () => {
   const { auth } = useAuth();
@@ -40,8 +40,8 @@ export const Header = () => {
     <nav>
       <div className="nav-logo-home-button">
         <NavLink style={getActiveStyle} to="/">
-          <SiTaichilang />
-          <span className="brand-name">DadSneakers</span>
+          <TbArrowBigLeftLineFilled />
+          <span className="brand-name">The Walk</span>
         </NavLink>
       </div>
 

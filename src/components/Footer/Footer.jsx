@@ -16,15 +16,12 @@ export const Footer = () => {
           <BsTwitter />
         </Link>
         <Link
-          to="https://github.com/Cyber-M0rn/Cyber-M0rn/blob/main/Inverse%20Matrix"
+          to="https://github.com/Mxrn-Cyber?tab=repositories"
           target="_blank"
         >
           <ImGithub />
         </Link>
-        <Link
-          to="https://web.facebook.com/morn.poseidon?_rdc=1&_rdr"
-          target="_blank"
-        >
+        <Link to="https://www.facebook.com/morn.scripter/" target="_blank">
           <SiFacebook />
         </Link>
       </div>
