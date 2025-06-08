@@ -3,7 +3,6 @@ import { useUserData } from "../../../../contexts/UserDataProvider";
 import { v4 as uuid } from "uuid";
 import { addOrderService } from "../../../../services/order-services/addOrderService";
 import { clearCartService } from "../../../../services/cart-services/clearCartService";
-
 import React from "react";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../../../../contexts/AuthProvider";
@@ -19,10 +18,7 @@ export const DeliveryAddress = () => {
     orderDetails: { cartItemsDiscountTotal, orderAddress },
   } = userDataState;
 
-  const KEY_ID = "rzp_test_VAxHG0Dkcr9qc6";
-
   const totalAmount = cartItemsDiscountTotal;
-
   const navigate = useNavigate();
 
   const userContact = addressList?.find(
@@ -31,45 +27,48 @@ export const DeliveryAddress = () => {
 
   const { auth, setCurrentPage } = useAuth();
 
-  const successHandler = (response) => {
-    const paymentId = response.razorpay_payment_id;
+  // Direct order success handler (no payment required)
+  const directOrderSuccessHandler = () => {
     const orderId = uuid();
     const order = {
-      paymentId,
+      paymentId: "NO_PAYMENT_REQUIRED", // or generate a mock payment ID
       orderId,
       amountPaid: totalAmount,
       orderedProducts: [...cartProducts],
       deliveryAddress: { ...orderAddress },
+      paymentStatus: "COMPLETED", // Set as completed
+      orderStatus: "CONFIRMED", // Set order as confirmed
+      orderDate: new Date().toISOString(),
     };
 
     dispatch({ type: "SET_ORDERS", payload: order });
     clearCartHandler(auth.token);
     setCurrentPage("orders");
+
+    // Show success message
+    toast.success("Order placed successfully!");
+
     navigate("/profile/orders");
   };
 
-  const razorpayOptions = {
-    key: KEY_ID,
-    currency: "INR",
-    amount: Number(totalAmount) * 100,
-    name: "DadSneakers",
-    description: "Order for products",
-    prefill: {
-      name: auth.firstName,
-      email: auth.email,
-      contact: userContact,
-    },
-    notes: { address: orderAddress },
-    theme: { color: "#000000" },
-    handler: (response) => successHandler(response),
-  };
-
+  // Updated place order handler (no payment gateway)
   const placeOrderHandler = () => {
     if (orderAddress) {
-      const razorpayInstance = new window.Razorpay(razorpayOptions);
-      razorpayInstance.open();
+      // Check if cart has items
+      if (cartProducts.length === 0) {
+        toast.error("Your cart is empty!");
+        return;
+      }
+
+      // Show loading toast
+      toast.loading("Placing your order...", { duration: 1000 });
+
+      // Simulate order processing delay (optional)
+      setTimeout(() => {
+        directOrderSuccessHandler();
+      }, 1000);
     } else {
-      toast("Please select an address!");
+      toast.error("Please select an address!");
     }
   };
 
@@ -87,8 +86,15 @@ export const DeliveryAddress = () => {
           {orderAddress?.pincode}
         </span>
         <span className="contact">Contact: {orderAddress?.phone}</span>
+
+        {/* Order Summary */}
+        <div className="order-summary">
+          <span className="total-amount">Total Amount: ${totalAmount}</span>
+          <span className="items-count">Items: {cartProducts.length}</span>
+        </div>
+
         <button onClick={placeOrderHandler} className="place-order-btn">
-          Place Order
+          Place Order (No Payment Required)
         </button>
       </div>
     </div>
