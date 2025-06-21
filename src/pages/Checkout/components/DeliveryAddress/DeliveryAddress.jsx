@@ -94,7 +94,7 @@ export const DeliveryAddress = () => {
         </div>
 
         <button onClick={placeOrderHandler} className="place-order-btn">
-          Place Order (No Payment Required)
+          Place Order
         </button>
       </div>
     </div>
